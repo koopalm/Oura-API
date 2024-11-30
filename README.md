@@ -57,7 +57,7 @@ pip install -r requirements.txt
 
 ## Example Output
 
-The script generates a bar chart comparing averages for weekdays and weekends, with metrics such as deep sleep, REM sleep, sleep score, and total sleep duration.
+The script generates a bar chart comparing averages for weekdays and weekends, with metrics such as deep sleep and REM sleep duration, and sleep score points.
 
 ## License
 
