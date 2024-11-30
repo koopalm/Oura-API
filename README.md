@@ -2,6 +2,8 @@
 
 This project analyzes and visualizes sleep data from the Oura Ring. It compares weekday and weekend sleep metrics, such as deep sleep, REM sleep, sleep scores, and total sleep hours, over a specified date range.
 
+Oura API documentation: https://cloud.ouraring.com/v2/docs
+
 ## Features
 
 - Fetches sleep data from the Oura API.
