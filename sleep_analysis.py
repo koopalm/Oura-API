@@ -56,23 +56,30 @@ def analyze_weekday_vs_weekend(df):
 
     return grouped
 
-def plot_comparison(df):
+def plot_comparisons(df):
     """
-    Plot comparison of sleep stats between weekdays and weekends in a single graph.
+    Plot separate comparisons for deep sleep, REM sleep, and score metrics, displayed side by side.
     """
     metrics = ['deep_sleep (mean)', 'rem_sleep (mean)', 'score (mean)']
+    titles = ['Deep Sleep', 'REM Sleep', 'Sleep Score']
+    units = ['minutes', 'minutes', 'points']
+    bar_width = 0.4
     x = range(len(df['is_weekend']))
 
-    plt.figure(figsize=(10, 6))
+    fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 
-    for i, metric in enumerate(metrics):
-        plt.bar([pos + i * 0.25 for pos in x], df[metric], width=0.25, label=metric)
+    for i, (metric, title, unit) in enumerate(zip(metrics, titles, units)):
+        ax = axes[i]
+        bars = ax.bar(x, df[metric], width=bar_width, color=['skyblue', 'lightcoral'], label=metric)
+        for bar, value in zip(bars, df[metric]):
+            ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5,
+                    f"{value:.1f} {unit}", ha="center", va="bottom", fontsize=10)
+        ax.set_title(title, fontsize=14)
+        ax.set_ylabel(f'Average {unit.title()}', fontsize=12)
+        ax.set_xlabel('Day Type', fontsize=12)
+        ax.set_xticks(x)
+        ax.set_xticklabels(df['is_weekend'], fontsize=12)
 
-    plt.title('Comparison of Sleep Metrics Between Weekdays and Weekends')
-    plt.ylabel('Average Values')
-    plt.xlabel('Day Type')
-    plt.xticks([pos + 0.25 for pos in x], df['is_weekend'])
-    plt.legend()
     plt.tight_layout()
     plt.show()
 
@@ -92,8 +99,8 @@ def main():
     stats = analyze_weekday_vs_weekend(df)
     print(stats)
 
-    print("Plotting comparison...")
-    plot_comparison(stats)
+    print("Plotting comparisons...")
+    plot_comparisons(stats)
 
 if __name__ == "__main__":
     main()
