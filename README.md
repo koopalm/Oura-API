@@ -13,7 +13,6 @@ Oura API documentation: https://cloud.ouraring.com/v2/docs
   - Deep Sleep (minutes)
   - REM Sleep (minutes)
   - Sleep Score (0-100)
-  - Total Sleep Duration (hours)
 
 ## File Structure
 
