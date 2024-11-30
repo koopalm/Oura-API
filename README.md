@@ -39,6 +39,10 @@ pip install -r requirements.txt
    git clone https://github.com/koopalm/Oura-API.git
    cd Oura-API
    ```
+   
+   ```bash
+   cd Oura-API
+   ```
 
 2. Add your Oura API token to `config.py`:
    ```python
