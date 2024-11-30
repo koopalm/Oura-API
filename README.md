@@ -57,6 +57,9 @@ pip install -r requirements.txt
    ```bash
    python sleep_analysis.py
    ```
+   ```bash
+   deep_sleep_flu_compare.py
+   ```
 
 4. The script will:
    - Fetch data for a date range.
@@ -64,20 +67,21 @@ pip install -r requirements.txt
    - Visualize the results in a single graph.
    - Compares deep sleep patterns before and after flu.
 
-## Example Output
+## Example Output for sleep_analysis.py
 
 The script generates a bar chart comparing averages for weekdays and weekends, with metrics such as deep sleep and REM sleep duration, and sleep score points.
 
 ![image](https://github.com/user-attachments/assets/ae439c90-c5f3-4a87-9942-0111c7a87761)
 
-## Example Output 
-
 ![image](https://github.com/user-attachments/assets/19804e0d-e5fe-40c9-b117-5e03e04dd1ba)
 
-## Example Output 
+## Example Output for deep_sleep_flu_compare.py
+
+Compares deep sleep patterns before and after flu and saves the chart as a file.
 
 ![image](https://github.com/user-attachments/assets/58aade36-31a2-4cc3-8f51-9342b27a1d21)
 
+![image](https://github.com/user-attachments/assets/fc1f3d59-24b3-4648-a280-37febab0be74)
 
 ## License
 
