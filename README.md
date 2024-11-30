@@ -65,6 +65,11 @@ The script generates a bar chart comparing averages for weekdays and weekends, w
 
 ![image](https://github.com/user-attachments/assets/ae439c90-c5f3-4a87-9942-0111c7a87761)
 
+## Example Output 
+
+![image](https://github.com/user-attachments/assets/19804e0d-e5fe-40c9-b117-5e03e04dd1ba)
+
+
 
 ## License
 
