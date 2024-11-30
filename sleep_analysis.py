@@ -1,72 +1,96 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import requests
-from datetime import datetime
 from config import API_TOKEN
+import requests
+
+# Constants
+BASE_URL = "https://api.ouraring.com/v2/usercollection/daily_sleep"
+HEADERS = {"Authorization": f"Bearer {API_TOKEN}"}
 
 def fetch_sleep_data(start_date, end_date):
-    url = "https://api.ouraring.com/v2/usercollection/daily_sleep"
-    headers = {"Authorization": f"Bearer {API_TOKEN}"}
+    """
+    Fetch sleep data from the Oura API for the given date range.
+    """
     params = {"start_date": start_date, "end_date": end_date}
-    response = requests.get(url, headers=headers, params=params)
-    if response.status_code == 200:
-        return response.json()["data"]
-    else:
-        print(f"Error fetching data: {response.status_code}")
-        return []
+    response = requests.get(BASE_URL, headers=HEADERS, params=params)
+    response.raise_for_status()
+    return response.json()
 
-def process_sleep_data(data):
-    processed_data = []
-    for item in data:
-        day = item["day"]
-        score = item["score"]
-        deep_sleep = item["contributors"]["deep_sleep"]  # Deep sleep in minutes
-        rem_sleep = item["contributors"]["rem_sleep"]  # REM sleep in minutes
-        total_sleep = item["contributors"]["total_sleep"]  # Total sleep in minutes
-        processed_data.append({
-            "date": day,
-            "score": score,
-            "deep_sleep_minutes": deep_sleep,
-            "rem_sleep_minutes": rem_sleep,
-            "total_sleep_minutes": total_sleep,
+def process_sleep_data(raw_data):
+    """
+    Process raw sleep data into a DataFrame.
+    """
+    sleep_data = raw_data.get("data", [])
+    records = []
+    for item in sleep_data:
+        records.append({
+            "date": item["day"],
+            "deep_sleep": item["contributors"]["deep_sleep"],
+            "rem_sleep": item["contributors"]["rem_sleep"],
+            "score": item["score"]
         })
-    return pd.DataFrame(processed_data)
+    df = pd.DataFrame(records)
+    df["date"] = pd.to_datetime(df["date"])
+    df["day_of_week"] = df["date"].dt.day_name()
+    return df
 
 def analyze_weekday_vs_weekend(df):
-    df["date"] = pd.to_datetime(df["date"])
-    df["is_weekend"] = df["date"].dt.dayofweek >= 5  # Saturday and Sunday
-    stats = df.groupby("is_weekend").mean().reset_index()
-    stats["is_weekend"] = stats["is_weekend"].map({False: "Weekdays", True: "Weekends"})
-    return stats
+    """
+    Compare sleep stats between weekdays and weekends with date ranges.
+    """
+    df['is_weekend'] = df['day_of_week'].apply(lambda x: 'Weekend' if x in ['Saturday', 'Sunday'] else 'Weekday')
+    
+    grouped = df.groupby('is_weekend').agg({
+        'deep_sleep': 'mean',
+        'rem_sleep': 'mean',
+        'score': 'mean',
+        'date': ['min', 'max']  # Adding min and max dates for range
+    }).reset_index()
+    
+    # Flatten multi-level columns
+    grouped.columns = ['is_weekend', 'deep_sleep (mean)', 'rem_sleep (mean)', 'score (mean)', 'start_date', 'end_date']
+    
+    # Add a date range column
+    grouped['date_range'] = grouped['start_date'].dt.strftime('%Y-%m-%d') + ' to ' + grouped['end_date'].dt.strftime('%Y-%m-%d')
+    grouped.drop(['start_date', 'end_date'], axis=1, inplace=True)
 
-def plot_comparison(stats):
+    return grouped
+
+def plot_comparison(df):
+    """
+    Plot comparison of sleep stats between weekdays and weekends in a single graph.
+    """
+    metrics = ['deep_sleep (mean)', 'rem_sleep (mean)', 'score (mean)']
+    x = range(len(df['is_weekend']))
+
     plt.figure(figsize=(10, 6))
-    x = stats["is_weekend"]
-    plt.bar(x, stats["score"], alpha=0.7, label="Sleep Score")
-    plt.bar(x, stats["deep_sleep_minutes"], alpha=0.7, label="Deep Sleep (min)")
-    plt.bar(x, stats["rem_sleep_minutes"], alpha=0.7, label="REM Sleep (min)")
-    plt.bar(x, stats["total_sleep_minutes"], alpha=0.7, label="Total Sleep (min)")
 
-    plt.title("Comparison of Sleep Metrics: Weekdays vs Weekends")
-    plt.xlabel("Days")
-    plt.ylabel("Metrics")
+    for i, metric in enumerate(metrics):
+        plt.bar([pos + i * 0.25 for pos in x], df[metric], width=0.25, label=metric)
+
+    plt.title('Comparison of Sleep Metrics Between Weekdays and Weekends')
+    plt.ylabel('Average Values')
+    plt.xlabel('Day Type')
+    plt.xticks([pos + 0.25 for pos in x], df['is_weekend'])
     plt.legend()
-    plt.grid(axis="y", linestyle="--", alpha=0.7)
     plt.tight_layout()
     plt.show()
 
 def main():
+    """
+    Main function to fetch, process, analyze, and visualize sleep data.
+    """
     start_date = "2024-10-31"
     end_date = "2024-11-30"
-
     print(f"Fetching sleep data from {start_date} to {end_date}...")
-    sleep_data = fetch_sleep_data(start_date, end_date)
-
+    
+    raw_data = fetch_sleep_data(start_date, end_date)
     print("Processing sleep data...")
-    df = process_sleep_data(sleep_data)
-
+    df = process_sleep_data(raw_data)
+    
     print("Analyzing weekday vs. weekend...")
     stats = analyze_weekday_vs_weekend(df)
+    print(stats)
 
     print("Plotting comparison...")
     plot_comparison(stats)
