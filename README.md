@@ -2,6 +2,8 @@
 
 This project analyzes and visualizes sleep data from the Oura Ring. It compares weekday and weekend sleep metrics, such as deep sleep, REM sleep, sleep scores, and total sleep hours, over a specified date range.
 
+Oura API documentation: https://cloud.ouraring.com/v2/docs
+
 ## Features
 
 - Fetches sleep data from the Oura API.
@@ -11,7 +13,6 @@ This project analyzes and visualizes sleep data from the Oura Ring. It compares 
   - Deep Sleep (minutes)
   - REM Sleep (minutes)
   - Sleep Score (0-100)
-  - Total Sleep Duration (hours)
 
 ## File Structure
 
@@ -39,6 +40,10 @@ pip install -r requirements.txt
    git clone https://github.com/koopalm/Oura-API.git
    cd Oura-API
    ```
+   
+   ```bash
+   cd Oura-API
+   ```
 
 2. Add your Oura API token to `config.py`:
    ```python
@@ -57,7 +62,15 @@ pip install -r requirements.txt
 
 ## Example Output
 
-The script generates a bar chart comparing averages for weekdays and weekends, with metrics such as deep sleep, REM sleep, sleep score, and total sleep duration.
+The script generates a bar chart comparing averages for weekdays and weekends, with metrics such as deep sleep and REM sleep duration, and sleep score points.
+
+![image](https://github.com/user-attachments/assets/ae439c90-c5f3-4a87-9942-0111c7a87761)
+
+## Example Output 
+
+![image](https://github.com/user-attachments/assets/19804e0d-e5fe-40c9-b117-5e03e04dd1ba)
+
+
 
 ## License
 
