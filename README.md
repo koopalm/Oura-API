@@ -59,6 +59,9 @@ pip install -r requirements.txt
 
 The script generates a bar chart comparing averages for weekdays and weekends, with metrics such as deep sleep and REM sleep duration, and sleep score points.
 
+![image](https://github.com/user-attachments/assets/ae439c90-c5f3-4a87-9942-0111c7a87761)
+
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
